@@ -9,6 +9,7 @@ int main(){
     cout << "3. 종료" << endl;
     cin >> choice;
 
+    //case문의 조건을 if문으로 바꾸었습니다.
     if(choice == 1){
         cout << "파일 저장을 선택했습니다." << endl;
     }
