@@ -50,22 +50,28 @@ int main(){
     string s1, s2;
     // 해밍거리
     int count = 100;
+    bool check = true;
 
-    // 해밍거리가 0이라면 서로 같은 문자열임으로 반복문을 탈출
-    // 아니라면 같은 문자열을 입력할 때까지 반복
-    while(count != 0){
+    // 문자열의 길이가 같다면 반복문을 탈출
+    // 문자열의 길이가 다르다면 입력할 때까지 반복
+    while(check){
         // 두 문자열을 입력
         cout << "DNA1: ";
         cin >> s1;
         cout << "DNA2: ";
         cin >> s2;
 
-        if (s1.length() != s2.length())
+        if (s1.length() != s2.length()){
+            // 길이가 다르다면 다시한번 더 받도록 check를 false로 둔다.
+            check = true;
             cout << "오류: 길이가 다름" << endl;
+        }
         else{
             // 함수에 보내어 해밍거리를 받아옴
             count = calcHammingDist(s1, s2);
             cout << "해밍 거리는 " << count << endl;
+            // 해밍거리를 출력했으면 탈출
+            check = false;
         }
     }
     
