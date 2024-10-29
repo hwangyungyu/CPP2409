@@ -4,7 +4,7 @@ using namespace std;
 //board를 전하고 싶었지만 전하지 못해서 전역변수로 선언하여 해결함. 
 //함수로 2차원 배열을 전하는 법을 알아야 할 듯함
 
-const int numCell = 5; // 보드판의 가로 세로 길이
+const int numCell = 3; // 보드판의 가로 세로 길이
 char board[numCell][numCell]{}; // 보드판을 나타내는 2차원 배열
 
 // is vaild 함수는 전역변수가 아니여도 해결이 가능하도록 해결함
