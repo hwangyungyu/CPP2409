@@ -17,4 +17,7 @@ int User::GetHP(){
     return hp;
 }
 
-// 사용자 정의 함수
+void User::IncreseItemCnt(int inc_item){
+    itemCnt += inc_item;
+}
+
