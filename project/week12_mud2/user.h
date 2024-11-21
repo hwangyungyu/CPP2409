@@ -4,7 +4,7 @@
 using namespace std;
 
 class User{
-private:
+protected:
     int hp;
     int itemCnt;
 public:
@@ -21,14 +21,12 @@ public:
     }
 };
 
-class Warrior : User{
+class Warrior:public User{
 public:
-    Warrior();
     void DoAttack();
 };
 
-class Magician : User{
+class Magician:public User{
 public:
-    Magician();
     void DoAttack();
 };
