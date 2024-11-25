@@ -52,9 +52,9 @@ int main() {
 	// 게임 시작 
 	while (1) { // 사용자에게 계속 입력받기 위해 무한 루프
 		if (check_user == 1) {
-			user = &warrior;
+			user = new Warrior();
 		} else if(check_user == 2) {
-			user = &magician;
+			user = new Magician();
 		}
 
 		if(!CheckUser(user)){
