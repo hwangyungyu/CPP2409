@@ -5,24 +5,38 @@ using namespace std;
 const int mapX = 5;
 const int mapY = 5;
 
+int map[mapY][mapX];
+
 bool checkXY(int user_x, int mapX, int user_y, int mapY);
-void displayMap(vector<vector<int>> map, int user_x, int user_y, int check_user);
-bool checkGoal(vector<vector<int>> map, int user_x, int user_y);
-void checkItem(vector<vector<int>> map, int user_x, int user_y, User *HP);
-void movePlayer(vector<vector<int>> map, int &user_x, int &user_y, int dx, int dy, int mapX, int mapY, User *HP, int check_user);
+void displayMap( int user_x, int user_y, int check_user);
+bool checkGoal( int user_x, int user_y);
+void checkItem( int user_x, int user_y, User *HP);
+void movePlayer( int &user_x, int &user_y, int dx, int dy, int mapX, int mapY, User *HP, int check_user);
 bool CheckUser(User *user);
 
 User* user;
 
 // 메인  함수
 int main() {
-	vector<vector<int>> map;
+	ifstream is{ "map.txt" };
+	if(!is){
+		cerr << "파일 오픈에 실패하였습니다." << endl;
+		exit(1);
+	}
 
-	map.push_back({0, 1, 2, 0, 4}); 
-	map.push_back({1, 0, 0, 2, 0}); 
-	map.push_back({0, 0, 0, 0, 0}); 
-	map.push_back({0, 2, 3, 0, 0}); 
-	map.push_back({3, 0, 0, 0, 2}); 
+	int map_input;
+	int i = 0, j = 0;
+
+	// while문을 통해 하나씩 받아옵니다.
+	while(is >> map_input){
+		map[i][j] = map_input;
+		j++;
+		// j가 mapY보다 커지면 다시 0으로 되돌립니다.
+		if(j == mapY){
+			j = 0;
+			i++;
+		}
+	}
 
 	// 유저의 hp를 초기에 20으로 설정함			
 	Warrior warrior;
@@ -33,22 +47,29 @@ int main() {
 	int user_y = 0; // 세로 번호
 
 	int check_user = 0;
-
+	//1202예외 추가
 	while(true){
-		cout << "직업을 선택해주세요. " << endl;
-		cout << "1. warrior" << endl;
-		cout << "2. magician" << endl;
-		cout << ">> ";
-		cin >> check_user;
+		// 예외 처리를 통해 직업의 선택의 예외를 고려합니다.
+		try{
+			cout << "직업을 선택해주세요. " << endl;
+			cout << "1. warrior" << endl;
+			cout << "2. magician" << endl;
+			cout << ">> ";
+			cin >> check_user;
 
-		if(check_user < 0 || check_user > 2){
+			if(check_user < 0 || check_user > 2){
+				throw check_user;
+			}
+		}
+		catch(int e){
 			cout << "올바르지 않은 선택입니다." << endl;
 		}
-		else{
+
+		if(check_user == 1 || check_user == 2){
 			break;
 		}
 	}
-
+	
 	// 게임 시작 
 	while (1) { // 사용자에게 계속 입력받기 위해 무한 루프
 		if (check_user == 1) {
@@ -77,20 +98,20 @@ int main() {
 		cin >> user_input;
 
 		if (user_input == "up") {
-		    movePlayer(map, user_x, user_y, 0, -1, mapX, mapY, user, check_user);  // 위로 이동
+		    movePlayer( user_x, user_y, 0, -1, mapX, mapY, user, check_user);  // 위로 이동
 		}
 		else if (user_input == "down") {
-		    movePlayer(map, user_x, user_y, 0, 1,  mapX, mapY, user, check_user);    // 아래로 이동
+		    movePlayer( user_x, user_y, 0, 1,  mapX, mapY, user, check_user);    // 아래로 이동
 		}
 		else if (user_input == "left") {
-		    movePlayer(map, user_x, user_y, -1, 0,  mapX, mapY, user, check_user);   // 왼쪽으로 이동
+		    movePlayer( user_x, user_y, -1, 0,  mapX, mapY, user, check_user);   // 왼쪽으로 이동
 		}
 		else if (user_input == "right") {
-		    movePlayer(map, user_x, user_y, 1, 0,  mapX, mapY, user, check_user);    // 오른쪽으로 이동
+		    movePlayer( user_x, user_y, 1, 0,  mapX, mapY, user, check_user);    // 오른쪽으로 이동
 		}
 		else if (user_input == "map") {
 			// TODO: 지도 보여주기 함수 호출
-			displayMap(map, user_x, user_y, check_user);
+			displayMap( user_x, user_y, check_user);
 		}
 		else if (user_input == "attack") {
 			user->DoAttack();
@@ -110,10 +131,10 @@ int main() {
 		}
 		 
 		//이벤트에 따른 hp증감을 checkItem함수를 통해 받습니다. 
-		checkItem(map, user_x, user_y, user);
+		checkItem( user_x, user_y, user);
 		
 		// 목적지에 도달했는지 체크
-		bool finish = checkGoal(map, user_x, user_y);
+		bool finish = checkGoal( user_x, user_y);
 		if (finish == true) {
 			if(check_user == 1){
 				cout << "warrior가 목적지에 도착했습니다! 축하합니다!" << endl;
@@ -132,7 +153,7 @@ int main() {
 
 
 // 지도와 사용자 위치 출력하는 함수
-void displayMap(vector<vector<int>> map, int user_x, int user_y, int check_user) {
+void displayMap( int user_x, int user_y, int check_user) {
 	for (int i = 0; i < mapY; i++) {
 		for (int j = 0; j < mapX; j++) {
 			if (i == user_y && j == user_x && check_user == 1) {
@@ -177,7 +198,7 @@ bool checkXY(int user_x, int mapX, int user_y, int mapY) {
 }
 
 // 유저의 위치가 목적지인지 체크하는 함수
-bool checkGoal(vector<vector<int>> map, int user_x, int user_y) {
+bool checkGoal( int user_x, int user_y) {
 	// 목적지 도착하면
 	if (map[user_y][user_x] == 4) {
 		return true;
@@ -186,7 +207,7 @@ bool checkGoal(vector<vector<int>> map, int user_x, int user_y) {
 }
 
 // 유저의 위치에 각종 이벤트를 확인하는 함수 
-void checkItem(vector<vector<int>> map, int user_x, int user_y, User *HP){
+void checkItem( int user_x, int user_y, User *HP){
 	// 이벤트를 담는 변수 
 	int item = map[user_y][user_x];
 	
@@ -211,7 +232,7 @@ void checkItem(vector<vector<int>> map, int user_x, int user_y, User *HP){
 }
 
 // 유저를 이동시키고, 그 결과를 출력하는 함수 
-void movePlayer(vector<vector<int>> map, int &user_x, int &user_y, int dx, int dy, int mapX, int mapY, User *HP, int check_user) {
+void movePlayer( int &user_x, int &user_y, int dx, int dy, int mapX, int mapY, User *HP, int check_user) {
     // 유저를gk 이동시킵니다. 
     user_x += dx;
     user_y += dy;
@@ -230,7 +251,7 @@ void movePlayer(vector<vector<int>> map, int &user_x, int &user_y, int dx, int d
 		
         HP->DecreaseHP(1);
         // 맵을 보여줍니다. 
-        displayMap(map, user_x, user_y, check_user);
+        displayMap( user_x, user_y, check_user);
     }
 }
 
