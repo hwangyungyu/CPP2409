@@ -91,62 +91,66 @@ int main() {
 		// 사용자의 입력을 저장할 변수
 		string user_input = "";
 		
-		
-		// 플레이어의 체력을 출력함 
-		cout << "현재 HP: " << user->GetHP() << "  "; 
-		cout << "명령어를 입력하세요 (up,down,left,right,map,attack,info,exit): ";
-		cin >> user_input;
+		// 플레이어 명령어 입력에 따른 예외 생성
+		try{
+			// 플레이어의 체력을 출력함 
+			cout << "현재 HP: " << user->GetHP() << "  "; 
+			cout << "명령어를 입력하세요 (up,down,left,right,map,attack,info,exit): ";
+			cin >> user_input;
 
-		if (user_input == "up") {
-		    movePlayer( user_x, user_y, 0, -1, mapX, mapY, user, check_user);  // 위로 이동
-		}
-		else if (user_input == "down") {
-		    movePlayer( user_x, user_y, 0, 1,  mapX, mapY, user, check_user);    // 아래로 이동
-		}
-		else if (user_input == "left") {
-		    movePlayer( user_x, user_y, -1, 0,  mapX, mapY, user, check_user);   // 왼쪽으로 이동
-		}
-		else if (user_input == "right") {
-		    movePlayer( user_x, user_y, 1, 0,  mapX, mapY, user, check_user);    // 오른쪽으로 이동
-		}
-		else if (user_input == "map") {
-			// TODO: 지도 보여주기 함수 호출
-			displayMap( user_x, user_y, check_user);
-		}
-		else if (user_input == "attack") {
-			user->DoAttack();
-		}
-		else if (user_input == "info") {
-			// 정보 명령어 추가 및 출력
-			cout << *user << endl;
-			continue;
-		}
-		else if (user_input == "exit") {
-			cout << "종료합니다.";
-			break;
-		}
-		else {
-			cout << "잘못된 입력입니다." << endl;
-			continue;
-		}
-		 
-		//이벤트에 따른 hp증감을 checkItem함수를 통해 받습니다. 
-		checkItem( user_x, user_y, user);
-		
-		// 목적지에 도달했는지 체크
-		bool finish = checkGoal( user_x, user_y);
-		if (finish == true) {
-			if(check_user == 1){
-				cout << "warrior가 목적지에 도착했습니다! 축하합니다!" << endl;
+			if (user_input == "up") {
+				movePlayer( user_x, user_y, 0, -1, mapX, mapY, user, check_user);  // 위로 이동
 			}
-			else{
-				cout << "magician이 목적지에 도착했습니다! 축하합니다!" << endl;
+			else if (user_input == "down") {
+				movePlayer( user_x, user_y, 0, 1,  mapX, mapY, user, check_user);    // 아래로 이동
+			}
+			else if (user_input == "left") {
+				movePlayer( user_x, user_y, -1, 0,  mapX, mapY, user, check_user);   // 왼쪽으로 이동
+			}
+			else if (user_input == "right") {
+				movePlayer( user_x, user_y, 1, 0,  mapX, mapY, user, check_user);    // 오른쪽으로 이동
+			}
+			else if (user_input == "map") {
+				// TODO: 지도 보여주기 함수 호출
+				displayMap( user_x, user_y, check_user);
+			}
+			else if (user_input == "attack") {
+				user->DoAttack();
+			}
+			else if (user_input == "info") {
+				// 정보 명령어 추가 및 출력
+				cout << *user << endl;
+				continue;
+			}
+			else if (user_input == "exit") {
+				cout << "종료합니다.";
+				break;
+			}
+			else {
+				throw user_input;
+				continue;
 			}
 			
-			cout << "게임을 종료합니다." << endl;
-			break;
+			//이벤트에 따른 hp증감을 checkItem함수를 통해 받습니다. 
+			checkItem( user_x, user_y, user);
+			
+			// 목적지에 도달했는지 체크
+			bool finish = checkGoal( user_x, user_y);
+			if (finish == true) {
+				if(check_user == 1){
+					cout << "warrior가 목적지에 도착했습니다! 축하합니다!" << endl;
+				}
+				else{
+					cout << "magician이 목적지에 도착했습니다! 축하합니다!" << endl;
+				}
+				
+				cout << "게임을 종료합니다." << endl;
+				break;
+			}
 		}
-	
+		catch(string str){
+			cout << "잘못된 입력입니다." << endl;
+		}
 	}
 	return 0;
 }
